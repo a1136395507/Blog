@@ -7,7 +7,6 @@ from sqlalchemy.exc import DatabaseError
 from flask_script import Manager
 from flask_migrate import Migrate
 
-
 app = create_app(os.getenv('APP_RUN_ENV') or 'dev')
 logger = app.logger
 if app.config.get("DEBUG"):
@@ -51,7 +50,6 @@ def post_response(response):
 
 manager = Manager(app)
 migrate = Migrate(app, db)
-
 
 if __name__ == '__main__':
     manager.run()

@@ -53,7 +53,7 @@ def register_blueprint(app):
 
     from app.center.blog import bp as blog_bp
     from app.center.user import bp as user_bp
-    app.register_blueprint(blog_bp, url_prefix="/api/v1/" + blog_bp.name)
+    app.register_blueprint(blog_bp, url_prefix="/")
     app.register_blueprint(user_bp, url_prefix="/api/v1" + user_bp.name)
 
 
