@@ -74,7 +74,7 @@ def create_app(config_name='dev'):
         app.logger.debug("Create db.app:{} pid:{}".format(app, os.getpid()))
         db.app = app
     db.init_app(app)
-    login_manager.init_app(app)
+    # login_manager.init_app(app)
     configure_logging(app)
     register_blueprint(app)
 
