@@ -1,28 +1,17 @@
-import os, traceback
+import os
+import logging
+import traceback
 from app import create_app, db
-from flask import jsonify, request
+from flask import jsonify, request, redirect, url_for
 from sqlalchemy.exc import DatabaseError
 from flask_script import Manager
 from flask_migrate import Migrate
 
 
-def regist_blueprint(app):
-    """
-    应用启动前注册蓝图
-    :param app:
-    :return:
-    """
-    # 注册蓝图，可以通过 http://127.0.0.1:5000/api/v1/blog/访问
-    # 主页蓝图注册
-
-    from app.center.blog import bp as blog_bp
-    app.register_blueprint(blog_bp, url_prefix="/api/v1/" + blog_bp.name)
-
-
 app = create_app(os.getenv('APP_RUN_ENV') or 'dev')
-
 logger = app.logger
-regist_blueprint(app)
+if app.config.get("DEBUG"):
+    logger.setLevel(logging.DEBUG)
 
 
 @app.before_request
@@ -62,6 +51,7 @@ def post_response(response):
 
 manager = Manager(app)
 migrate = Migrate(app, db)
+
 
 if __name__ == '__main__':
     manager.run()

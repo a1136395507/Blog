@@ -1,11 +1,13 @@
 # coding=utf-8
 
 import os
+from flask_cors import *
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from app.utils.json_formater import JSONFormatter
 from config.config import config_map
+
 db = SQLAlchemy()
 
 # 初始化登录操作
@@ -40,6 +42,21 @@ def configure_logging(app):
     app.logger.removeHandler(default_handler)
 
 
+def register_blueprint(app):
+    """
+    应用启动前注册蓝图
+    :param app:
+    :return:
+    """
+    # 注册蓝图，可以通过 http://127.0.0.1:5000/api/v1/blog/访问
+    # 主页蓝图注册
+
+    from app.center.blog import bp as blog_bp
+    from app.center.user import bp as user_bp
+    app.register_blueprint(blog_bp, url_prefix="/api/v1/" + blog_bp.name)
+    app.register_blueprint(user_bp, url_prefix="/api/v1" + user_bp.name)
+
+
 def create_app(config_name='dev'):
     """
     初始化flask app ,config_name 为对于的环境名 DEV|PRD
@@ -47,16 +64,18 @@ def create_app(config_name='dev'):
     :return:
     """
     app = Flask(__name__)
+    # 设置允许跨域
+    CORS(app, supports_credentials=True)
     app.config.from_object(config_map[config_name])
     app.config['JSON_AS_ASCII'] = False
     # config[config_name].init_app(app)
-
+    # 初始化插件
     if not db.app:
         app.logger.debug("Create db.app:{} pid:{}".format(app, os.getpid()))
         db.app = app
     db.init_app(app)
     login_manager.init_app(app)
     configure_logging(app)
+    register_blueprint(app)
 
     return app
-
