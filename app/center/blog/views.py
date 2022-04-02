@@ -17,7 +17,8 @@ def home_test():
 def index_html():
     try:
 
-        return render_template("index.html")
+        return render_template("china_chess.html")
     except:
         print(format_exc())
         return "出错了"
+
